@@ -1,0 +1,19 @@
+.App{
+   height: 100vh;
+}
+.App-logo{
+  width: 200px;
+  height: 64px;
+  display: flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.App-logo img{
+    width:150px;
+    height:40px;
+}
+
+.ant-card {
+    height: 100%;
+}
