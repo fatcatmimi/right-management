@@ -1,3 +1,9 @@
+/*
+ * @Author: Mr.Q
+ * @Date: 2021-10-19 15:47:53
+ * @LastEditTime: 2022-03-28 11:08:27
+ * @Description: 
+ */
 import { useEffect } from 'react'
 import { Layout } from 'antd';
 import { HashRouter, Switch, Route, Redirect } from 'react-router-dom';
@@ -21,9 +27,9 @@ import './App.css'
 const { Sider, Content } = Layout;
 function App() {
     useEffect(() => {
-        cookie.save('PHPSESSID', '00k9k1191b02a2epabsb3sq8o0')
-        cookie.save('wnPersonId', '2021639')
-        cookie.save('wnSessionKey', 'd4d317246783f8ef1b36f2497f74ab61')
+        // cookie.save('PHPSESSID', 'qpeohm2j2pdf4eogi2p3gvbth1')
+        // cookie.save('wnPersonId', '2021639')
+        // cookie.save('wnSessionKey', '33416d5365935d0f04803e4e978bfebb')
 
         //根据cookie 获取 person
         getPersonDetail()
