@@ -5,7 +5,7 @@ import moment from 'moment';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select
-export default class ToolBar_OperateComponent extends React.Component {
+export default class ToolBarOperateComponent extends React.Component {
     render() {
         const { getData, formInstance, type = 'assetUse' } = this.props
         return (

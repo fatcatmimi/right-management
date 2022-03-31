@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table, Button, Card, Space, Modal, message, Form, Input, Select, Radio, InputNumber } from 'antd'
-import ToolBar_OperateComponent from '../../components/ToolBar_OperateComputer'
+import ToolBarOperateComponent from '../../components/ToolBar_OperateComputer'
 import { CloseOutlined, IssuesCloseOutlined } from '@ant-design/icons';
 import {
     getUseDataApi, getAssertName, getAssertType, getCompanyRegion,
@@ -210,7 +210,7 @@ export class AssetUse extends React.Component {
 
     render() {
         const { data, selectRowKeys, loading } = this.state
-        return <Card title={<ToolBar_OperateComponent formInstance={this.toolbar} getData={this.getData} />}
+        return <Card title={<ToolBarOperateComponent formInstance={this.toolbar} getData={this.getData} />}
             extra={<Space>
                 <Button type='primary' icon={<CloseOutlined />} onClick={this.handleCancelButton} disabled={!selectRowKeys.length > 0}>作废</Button>
                 <Button type='primary' icon={<IssuesCloseOutlined />} onClick={this.handleUseButton}> 领用</Button>
@@ -232,6 +232,9 @@ export class AssetUse extends React.Component {
                             this.onSelectChange([record.Id])
                         }
                     }
+                }}
+                pagination={{
+                    showSizeChanger: false
                 }}
             >
                 <Column title="序号" align='center' dataIndex='RowId' />
@@ -395,7 +398,7 @@ export class AssetBack extends React.Component {
     render() {
         const { data, selectRowKeys, loading } = this.state
 
-        return <Card title={<ToolBar_OperateComponent
+        return <Card title={<ToolBarOperateComponent
             formInstance={this.toolbar}
             getData={this.getData}
             type={'assetBack'}
@@ -422,6 +425,9 @@ export class AssetBack extends React.Component {
                             this.onSelectChange([record.Id])
                         }
                     }
+                }}
+                pagination={{
+                    showSizeChanger: false
                 }}
             >
                 <Column title="序号" dataIndex='RowId' />
@@ -523,7 +529,7 @@ class UseForm extends React.Component {
     }
 
     render() {
-        const { AssetsNameList, AssetsNameTypeList, CompanyList } = this.state
+        const { AssetsNameList, AssetsNameTypeList } = this.state
 
         return <Form
             ref={this.props.formInstance}

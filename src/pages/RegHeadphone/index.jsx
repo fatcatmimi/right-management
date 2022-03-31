@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, Button, Space, Table, Modal, message, Popconfirm, Form, Input } from 'antd';
 import { DownloadOutlined, CloseOutlined, PlusOutlined, CheckOutlined } from '@ant-design/icons';
-import ToolBar_Headphone from '../../components/ToolBar_Headphone/ToolBar_Headphone';
+import ToolBarHeadphone from '../../components/ToolBar_Headphone/ToolBar_Headphone';
 import HeadApplyForm from './HeadApplyForm';
 import { PageSize } from '../../config/memory_config';
 import { checkPersonId } from '../../tools/index';
@@ -66,9 +66,10 @@ export default class RegHeadphone extends React.Component {
                 reads.onload = (e) => {
                     var stringResult = e.target.result.split('\r\n');
                     let personList = stringResult.filter((item) => {
-                        if (item != '') {
+                        if (item !== '') {
                             return checkPersonId(item);
                         }
+                        return false
                     })
                     if (personList.length > 0) {
                         const personListString = Array.from(new Set(personList)).join(',');
@@ -284,7 +285,7 @@ export default class RegHeadphone extends React.Component {
     popBatch = (batch) => {
         const { batchArray } = this.state
         if (batchArray.length > 0) {
-            const newBatchArry = batchArray.filter((item) => item.BatchId != batch)
+            const newBatchArry = batchArray.filter((item) => item.BatchId !== batch)
 
             this.setState({
                 batchArray: newBatchArry ?? []
@@ -315,7 +316,7 @@ export default class RegHeadphone extends React.Component {
         } catch (e) {
             this.props.history.push('/home')
         }
-        if (pathname == '/apply/equipment') {
+        if (pathname === '/apply/equipment') {
             this.type = 1;
             this.extra = (
                 <Space>
@@ -343,7 +344,7 @@ export default class RegHeadphone extends React.Component {
         }
 
         return <>
-            <Card title={<ToolBar_Headphone
+            <Card title={<ToolBarHeadphone
                 type={this.type}
                 getData={this.getData}
                 formInstance={this.myRef}

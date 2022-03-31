@@ -5,7 +5,7 @@ import { SearchOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
-export default class ToolBar_Headphone extends React.Component {
+export default class ToolBarHeadphone extends React.Component {
 
     render() {
         const { batchArray, formInstance, clearData, getData, getBatchArray, handleChangeStatus } = this.props

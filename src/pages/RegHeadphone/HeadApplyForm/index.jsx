@@ -50,7 +50,7 @@ export default class HeadApplyForm extends React.Component {
     //上传验证
     checkPic = (rule, value) => {
         return new Promise((resolve, reject) => {
-            if (!value || value.length == 0) {
+            if (!value || value.length === 0) {
                 reject(new Error('请上传文件'))
             } else if (!(value[0].name).endsWith('csv')) {
                 reject(new Error('文件类型错误，类型为csv格式'))

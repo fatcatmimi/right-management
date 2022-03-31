@@ -1,7 +1,7 @@
 /*
  * @Author: Mr.Q
  * @Date: 2021-10-19 15:47:53
- * @LastEditTime: 2022-03-28 11:08:27
+ * @LastEditTime: 2022-03-28 13:20:24
  * @Description: 
  */
 import { useEffect } from 'react'
@@ -27,9 +27,9 @@ import './App.css'
 const { Sider, Content } = Layout;
 function App() {
     useEffect(() => {
-        // cookie.save('PHPSESSID', 'qpeohm2j2pdf4eogi2p3gvbth1')
-        // cookie.save('wnPersonId', '2021639')
-        // cookie.save('wnSessionKey', '33416d5365935d0f04803e4e978bfebb')
+        cookie.save('PHPSESSID', 'll6taslaul54nvpuqqhg7cp8u7')
+        cookie.save('wnPersonId', '2021639')
+        cookie.save('wnSessionKey', '1d15e4e5ab3aa1a8157c2564a1ab434b')
 
         //根据cookie 获取 person
         getPersonDetail()

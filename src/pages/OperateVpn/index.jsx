@@ -140,8 +140,8 @@ export default class OperateVpn extends React.Component {
             }, {
                 title: '操作',
                 align: 'center',
-                render: (text, record) => {
-                    return <Button type='primary' disabled={record.colorid == 0} onClick={() => { this.sendEmail(record) }} >完成</Button>
+                render: (_text, record) => {
+                    return <Button type='primary' disabled={parseInt(record.colorid) === 0} onClick={() => { this.sendEmail(record) }} >完成</Button>
                 }
             }
         ]
