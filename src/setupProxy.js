@@ -16,7 +16,7 @@ module.exports = function (app) {
             target: 'http://192.168.82.215/',
             changeOrigin: true,
             pathRewrite: {
-                '^/interface': "/webNerve/modules/itservice/CostsAnalytics/qianlei/OperationApprovalSystem/interface/"
+                '^/interface': "/webNerve/modules/itservice/CostsAnalytics/wangzhe/OperationApprovalSystem/interface/"
             }
         })
     );
@@ -26,7 +26,7 @@ module.exports = function (app) {
             target: 'http://192.168.82.215/',
             changeOrigin: true,
             pathRewrite: {
-                '^/interface': "/webNerve/modules/itservice/CostsAnalytics/qianlei/OperationApprovalSystem/interface/"
+                '^/interface': "/webNerve/modules/itservice/CostsAnalytics/wangzhe/OperationApprovalSystem/interface/"
             }
         })
     );
@@ -36,7 +36,7 @@ module.exports = function (app) {
             target: 'http://192.168.82.215/',
             changeOrigin: true,
             pathRewrite: {
-                '^/interface': "/webNerve/modules/itservice/CostsAnalytics/qianlei/OperationApprovalSystem/interface/"
+                '^/interface': "/webNerve/modules/itservice/CostsAnalytics/wangzhe/OperationApprovalSystem/interface/"
             }
         })
     )

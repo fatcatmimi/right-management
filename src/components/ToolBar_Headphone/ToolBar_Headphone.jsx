@@ -8,14 +8,15 @@ const { Option } = Select;
 export default class ToolBarHeadphone extends React.Component {
 
     render() {
-        const { batchArray, formInstance, clearData, getData, getBatchArray, handleChangeStatus } = this.props
+        const { batchArray, formInstance, clearData, getData, getBatchArray, handleChangeStatus, type } = this.props
         return <Form
             ref={formInstance}
             layout={'inline'}
             // labelCol={{ span: 14 }}
             // wrapperCol={{ span: 15 }}
             initialValues={{
-                status: "1"
+                status: "1",
+                stateId: "-1"
             }}
             onFieldsChange={clearData}
         >
@@ -45,6 +46,19 @@ export default class ToolBarHeadphone extends React.Component {
 
                 </Select>
             </Form.Item>
+            {
+                type === 4 ? <Form.Item name="stateId" label="动作" rules={[{ required: true, message: '请选择' }]} >
+                    <Select
+                        style={{ width: 100 }}
+                    >
+                        <Option value="-1" key="-1">所有</Option>
+                        <Option value="1" key="1">申请领用</Option>
+                        <Option value="5" key="5">丢失领用</Option>
+                        <Option value="7" key="7">置换领用</Option>
+                    </Select>
+                </Form.Item> : null
+            }
+
             <Form.Item >
                 <Button type="primary" icon={<SearchOutlined />} onClick={() => { getData() }}>
                     查询

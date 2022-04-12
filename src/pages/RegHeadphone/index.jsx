@@ -247,7 +247,8 @@ export default class RegHeadphone extends React.Component {
     }
 
     getData = async (begin = 1, end = 10) => {
-        const { batch } = this.getToolBarParam()
+        const { batch, stateId } = this.getToolBarParam()
+        console.log(this.getToolBarParam())
         if (!batch) {
             this.setState({ data: [] })
             return
@@ -256,7 +257,7 @@ export default class RegHeadphone extends React.Component {
         this.setState({ loading: true });
 
         try {
-            const result = await getEquipmentData(this.projectId, batch, this.type, begin, end)
+            const result = await getEquipmentData(this.projectId, batch, this.type, stateId, begin, end)
             this.setState({
                 data: result.data,
                 total: result.total
@@ -316,7 +317,7 @@ export default class RegHeadphone extends React.Component {
         } catch (e) {
             this.props.history.push('/home')
         }
-        if (pathname === '/apply/equipment') {
+        if (pathname === '/apply/equipment/apply') {
             this.type = 1;
             this.extra = (
                 <Space>
@@ -359,6 +360,7 @@ export default class RegHeadphone extends React.Component {
                     loading={loading}
                     rowKey={'rowId'}
                     pagination={{
+                        showSizeChanger: false,
                         pageSize: PageSize,
                         total: total,
                         onChange: (pageNumber, pageSize) => {

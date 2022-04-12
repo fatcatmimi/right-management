@@ -13,13 +13,24 @@ export const getAssertType = (assetsId) => sendAxios(Base + '/interface/asynRead
 //获取batchid
 export const getBatchId = (projectId, applyStatus, type = 1) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=get_batchId', { projectId, applyStatus, type }, 'GET')
 //获取数据
-export const getEquipmentData = (projectId, batchId, type, begin = 1, end = 10) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=get_data', { projectId, batchId, type, begin, end }, 'GET')
+export const getEquipmentData = (projectId, batchId, type, stateId = -1, begin = 1, end = 10) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=get_data', { projectId, batchId, type, stateId, begin, end }, 'GET')
 //删除
-export const deleteBatchId = (projectId, batchId) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=del_batchId', { projectId, batchId }, 'GET')
+export const deleteBatchId = (projectId, batchId, stateId = 1) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=del_batchId', { projectId, batchId, stateId }, 'GET')
 //更新地区
 export const updateRegion = (projectId, batchId, optionCente) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=update_region', { projectId, batchId, optionCente }, 'GET')
 //驳回
 export const rejectReason = (projectId, batchId, optionRemark) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=reject', { projectId, batchId, optionRemark }, 'GET')
+
+
+
+//丢失领用获原申请信息
+export const getOldMissInfo = (assetsId) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=get_original_data', { assetsId }, 'GET')
+//丢失领用提交
+export const submitMissInfo = (assetsId, assetsTypeId, newAssetsTypeId, applyRemark, relationId = -1, cmd = 'lose_insert') => sendAxios(Base + `/interface/asynRead_reg_headphone.php?cmd=${cmd}`, { assetsId, assetsTypeId, newAssetsTypeId, applyRemark, relationId }, 'POST')
+//丢失领用获取数据
+export const getMissInfo = (applyStatus = -1, cmd) => sendAxios(Base + `/interface/asynRead_reg_headphone.php?cmd=${cmd}`, { applyStatus }, 'GET')
+//删除丢失领用数据
+export const deleteMissInfo = (workflowId, stateId) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=del_batchId', { workflowId, stateId }, 'GET')
 
 
 //上传文件

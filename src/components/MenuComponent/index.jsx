@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link, withRouter } from 'react-router-dom';
-// import {menuList} from '../../config/menu_config.js'
 import { Menu } from 'antd';
 import { DesktopOutlined, HomeOutlined } from '@ant-design/icons';
 import { getMenuApi } from '../../api'
@@ -9,12 +8,13 @@ const { SubMenu } = Menu
 class MenuComponent extends React.PureComponent {
     state = {
         menuTreeNode: [],
+
     }
 
     getMenu = async () => {
-        const menuList = await getMenuApi()
+        this.menuList = await getMenuApi()
 
-        const menuTreeNode = this.generateMenu(menuList ?? []);
+        const menuTreeNode = this.generateMenu(this.menuList ?? []);
 
         this.setState({
             menuTreeNode
@@ -22,12 +22,9 @@ class MenuComponent extends React.PureComponent {
     }
 
     componentDidMount() {
-        this.getMenu()
-        // setTimeout(()=>{
-        //     this.getMenu()
-        // },5000)
-
+        this.getMenu();
     }
+
 
     generateMenu = (menuList) => {
         return menuList.map((value) => {
@@ -53,19 +50,30 @@ class MenuComponent extends React.PureComponent {
         })
     }
 
-    render() {
+    //设置菜单展开
+    setMenuOpen = () => {
         const { pathname } = this.props.location;
         //const pattern = /^(\/.*\/.*\/).*$/ ;
-        const pattern = /^(\/.*?)\/.*$/;
-        if (pattern.test(pathname)) {
-            this.openKeys = RegExp.$1
-        }
+        // const pattern = /^(\/.*?)\/.*$/;
+        // if (pattern.test(pathname)) {
+        //     this.openKeys = RegExp.$1
+        // }
+        //console.log(pathname, pathname.split('/').splice(1))
+        const pathList = pathname.split('/')
+        const pathArray = pathList.splice(1, pathList.length - 2)
 
+        return pathArray.reduce((total, curr, next) => {
+            total[next] = `${total}/${curr}`
+            return total
+        }, []);
+    }
+
+    render() {
         return (
             <Menu theme='dark'
                 mode="inline"
-                defaultOpenKeys={[this.openKeys]}
-                selectedKeys={[pathname]}
+                defaultOpenKeys={this.setMenuOpen()}
+                selectedKeys={[this.props.location.pathname]}
                 style={{ height: '90%' }}
             >
                 {this.state.menuTreeNode}
