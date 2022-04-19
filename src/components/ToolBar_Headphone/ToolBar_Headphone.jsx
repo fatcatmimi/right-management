@@ -8,7 +8,7 @@ const { Option } = Select;
 export default class ToolBarHeadphone extends React.Component {
 
     render() {
-        const { batchArray, formInstance, clearData, getData, getBatchArray, handleChangeStatus, type } = this.props
+        const { batchArray, formInstance, clearData, getData, getBatchArray, handleChangeStatus, handleChangeStateId, type } = this.props
         return <Form
             ref={formInstance}
             layout={'inline'}
@@ -20,6 +20,19 @@ export default class ToolBarHeadphone extends React.Component {
             }}
             onFieldsChange={clearData}
         >
+            {
+                type === 4 ? <Form.Item name="stateId" label="动作" rules={[{ required: true, message: '请选择' }]} >
+                    <Select
+                        style={{ width: 100 }}
+                        onChange={(value) => handleChangeStateId(value)}
+                    >
+                        <Option value="-1" key="-1">所有</Option>
+                        <Option value="1" key="1">申请领用</Option>
+                        <Option value="5" key="5">丢失领用</Option>
+                        <Option value="7" key="7">置换领用</Option>
+                    </Select>
+                </Form.Item> : null
+            }
             <Form.Item name="status" label="申请状态" rules={[{ required: true, message: '请选择' }]} >
                 <Select
                     onChange={(value) => {
@@ -46,18 +59,6 @@ export default class ToolBarHeadphone extends React.Component {
 
                 </Select>
             </Form.Item>
-            {
-                type === 4 ? <Form.Item name="stateId" label="动作" rules={[{ required: true, message: '请选择' }]} >
-                    <Select
-                        style={{ width: 100 }}
-                    >
-                        <Option value="-1" key="-1">所有</Option>
-                        <Option value="1" key="1">申请领用</Option>
-                        <Option value="5" key="5">丢失领用</Option>
-                        <Option value="7" key="7">置换领用</Option>
-                    </Select>
-                </Form.Item> : null
-            }
 
             <Form.Item >
                 <Button type="primary" icon={<SearchOutlined />} onClick={() => { getData() }}>

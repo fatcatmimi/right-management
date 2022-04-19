@@ -17,7 +17,9 @@ export default class RegHeadphone extends React.Component {
         loading: false,
         total: 0,
         status: '1',
-        batchArray: []
+        stateId: '-1',
+        batchArray: [],
+        selectedRowKeys: []
     }
 
     componentDidMount() {
@@ -151,8 +153,37 @@ export default class RegHeadphone extends React.Component {
 
     }
 
+    //获取workflowId
+    checkHasSelectRow = () => {
+        if (this.state.selectedRowKeys.length > 0) {
+            const row = this.state.data.filter(item => {
+                return item.workflowId === this.state.selectedRowKeys[0]
+            })
+            if (row.length > 0) {
+                return row[0].workflowId
+            } else {
+                return -1;
+            }
+        } else {
+            const errorMessage = {
+                message: '请选择一行记录'
+            }
+            throw (errorMessage)
+        }
+    }
+
     handleComplete = () => {
-        const { batch } = this.getToolBarParam()
+        const { batch, stateId } = this.getToolBarParam()
+        let workflowId = -1;
+        if (parseInt(stateId) === 5 || parseInt(stateId) === 7) {
+            try {
+                workflowId = this.checkHasSelectRow()
+            } catch (e) {
+                message.error(e.message);
+                return
+            }
+
+        }
 
         const propF = (where) => ({
             title: '是否选择该地区?',
@@ -160,7 +191,7 @@ export default class RegHeadphone extends React.Component {
             okText: '确认',
             onConfirm: () => {
                 return new Promise(async (resolve) => {
-                    const result = await updateRegion(this.projectId, batch, where);
+                    const result = await updateRegion(this.projectId, batch, where, workflowId, stateId);
 
                     if (result === 'OK') {
                         this.popBatch(batch)
@@ -200,12 +231,24 @@ export default class RegHeadphone extends React.Component {
     }
 
     handleReject = () => {
-        const { batch } = this.getToolBarParam()
+        const { batch, stateId } = this.getToolBarParam()
 
         const onFinish = async (value) => {
-            const { reason } = value
 
-            const result = await rejectReason(this.projectId, batch, reason);
+            const { reason } = value
+            let workflowId = -1
+            if (parseInt(stateId) === 5 || parseInt(stateId) === 7) {
+                try {
+                    workflowId = this.checkHasSelectRow()
+                } catch (e) {
+                    console.log(e)
+                    message.error(e.message);
+                    return
+                }
+            }
+
+            const result = await rejectReason(this.projectId, batch, reason, workflowId, stateId);
+
             if (result === 'OK') {
                 this.popBatch(batch)
                 this.getData()
@@ -247,8 +290,8 @@ export default class RegHeadphone extends React.Component {
     }
 
     getData = async (begin = 1, end = 10) => {
-        const { batch, stateId } = this.getToolBarParam()
-        console.log(this.getToolBarParam())
+        const { status, batch, stateId } = this.getToolBarParam()
+
         if (!batch) {
             this.setState({ data: [] })
             return
@@ -257,7 +300,7 @@ export default class RegHeadphone extends React.Component {
         this.setState({ loading: true });
 
         try {
-            const result = await getEquipmentData(this.projectId, batch, this.type, stateId, begin, end)
+            const result = await getEquipmentData(this.projectId, status, batch, this.type, stateId, begin, end)
             this.setState({
                 data: result.data,
                 total: result.total
@@ -280,6 +323,10 @@ export default class RegHeadphone extends React.Component {
 
     handleChangeStatus = (status) => {
         this.setState({ status })
+    }
+
+    handleChangeStateId = (stateId) => {
+        this.setState({ stateId })
     }
 
     //从当前申请批次中删除当前的
@@ -306,11 +353,19 @@ export default class RegHeadphone extends React.Component {
     }
 
 
+    handleRowSelect = (selectedRowKeys) => {
+        this.setState({ selectedRowKeys: [selectedRowKeys] })
+    }
+
+    handleClickRow = (record) => {
+        const { workflowId } = record
+        this.setState({ selectedRowKeys: [workflowId] })
+    }
 
     render() {
         //区分
         const { pathname, state } = this.props.location
-        const { data, total, loading, batchArray, status } = this.state
+        const { data, total, loading, batchArray, status, selectedRowKeys, stateId } = this.state
 
         try {
             this.projectId = state.projectId
@@ -338,8 +393,8 @@ export default class RegHeadphone extends React.Component {
             this.type = 4;
             this.extra = (
                 <Space>
-                    <Button type="primary" icon={<CheckOutlined />} onClick={this.handleComplete} disabled={status === '1' ? false : true}>完成</Button>
-                    <Button type="primary" icon={<CloseOutlined />} onClick={this.handleReject} disabled={status === '1' ? false : true}>驳回</Button>
+                    <Button type="primary" icon={<CheckOutlined />} onClick={this.handleComplete} disabled={stateId !== "-1" ? false : true}>完成</Button>
+                    <Button type="primary" icon={<CloseOutlined />} onClick={this.handleReject} disabled={stateId !== "-1" ? false : true}>驳回</Button>
                 </Space>
             )
         }
@@ -353,12 +408,14 @@ export default class RegHeadphone extends React.Component {
                 clearData={this.clearData}
                 getBatchArray={this.getBatchArray}
                 handleChangeStatus={this.handleChangeStatus}
+                handleChangeStateId={this.handleChangeStateId}
             />}
                 extra={this.extra}>
                 <Table bordered
                     dataSource={data}
                     loading={loading}
-                    rowKey={'rowId'}
+                    rowKey={'workflowId'}
+                    size={'small'}
                     pagination={{
                         showSizeChanger: false,
                         pageSize: PageSize,
@@ -369,8 +426,19 @@ export default class RegHeadphone extends React.Component {
                             this.getData(begin, end)
                         }
                     }}
+                    rowSelection={parseInt(this.type) === 4 ? {
+                        type: 'radio',
+                        onChange: this.handleRowSelect,
+                        selectedRowKeys: selectedRowKeys
+                    } : null}
+                    onRow={record => {
+                        return {
+                            onClick: event => { this.handleClickRow(record) }, // 点击行
+                        };
+                    }}
                 >
                     <Column title="序号" dataIndex="rowId" />
+                    <Column title="动作" dataIndex="StateName" />
                     <Column title="资产名称" dataIndex="AssetsName" />
                     <Column title="资产类别" dataIndex="AssetsType" />
                     <Column title="申请人" dataIndex="ApplyPersonName" />
@@ -378,7 +446,7 @@ export default class RegHeadphone extends React.Component {
                     <Column title="使用人" dataIndex="UserPersonName" />
                     <Column title="数量" dataIndex="ApplyNum" />
                     <Column title="申请日期" dataIndex="ApplyTime" />
-                    <Column title="状态" dataIndex="ApplyStatu" />
+                    <Column title="状态" dataIndex="ApplyStatus" />
                     <Column title="操作人" dataIndex="OptionPersonName" />
                     <Column title="地点" dataIndex="OptionCenter" />
                     <Column title="领用日期" dataIndex="OptionTime" />

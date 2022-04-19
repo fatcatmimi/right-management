@@ -13,13 +13,13 @@ export const getAssertType = (assetsId) => sendAxios(Base + '/interface/asynRead
 //获取batchid
 export const getBatchId = (projectId, applyStatus, type = 1) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=get_batchId', { projectId, applyStatus, type }, 'GET')
 //获取数据
-export const getEquipmentData = (projectId, batchId, type, stateId = -1, begin = 1, end = 10) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=get_data', { projectId, batchId, type, stateId, begin, end }, 'GET')
+export const getEquipmentData = (projectId, applyStatus, batchId, type, stateId = -1, begin = 1, end = 10) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=get_data', { projectId, applyStatus, batchId, type, stateId, begin, end }, 'GET')
 //删除
 export const deleteBatchId = (projectId, batchId, stateId = 1) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=del_batchId', { projectId, batchId, stateId }, 'GET')
 //更新地区
-export const updateRegion = (projectId, batchId, optionCente) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=update_region', { projectId, batchId, optionCente }, 'GET')
+export const updateRegion = (projectId, batchId, optionCenter, workflowId, stateId) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=update_region', { projectId, batchId, optionCenter, workflowId, stateId }, 'GET')
 //驳回
-export const rejectReason = (projectId, batchId, optionRemark) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=reject', { projectId, batchId, optionRemark }, 'GET')
+export const rejectReason = (projectId, batchId, optionRemark, workflowId, stateId) => sendAxios(Base + '/interface/asynRead_reg_headphone.php?cmd=reject', { projectId, batchId, optionRemark, workflowId, stateId}, 'GET')
 
 
 
