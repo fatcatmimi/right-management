@@ -6,16 +6,19 @@ import { SearchOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
 export default class ToolBarHeadphone extends React.Component {
-
+    state = {
+        isEnable: false
+    }
     render() {
         const { batchArray, formInstance, clearData, getData, getBatchArray, handleChangeStatus, handleChangeStateId, type } = this.props
+        const { isEnable } = this.state
         return <Form
             ref={formInstance}
             layout={'inline'}
             // labelCol={{ span: 14 }}
             // wrapperCol={{ span: 15 }}
             initialValues={{
-                status: "1",
+                status: type === 1 ? "1" : "-1",
                 stateId: "-1"
             }}
             onFieldsChange={clearData}
@@ -24,7 +27,20 @@ export default class ToolBarHeadphone extends React.Component {
                 type === 4 ? <Form.Item name="stateId" label="动作" rules={[{ required: true, message: '请选择' }]} >
                     <Select
                         style={{ width: 100 }}
-                        onChange={(value) => handleChangeStateId(value)}
+                        onChange={
+                            (value) => {
+                                if (parseInt(value) === 5 || parseInt(value) === 7) {
+                                    this.setState({
+                                        isEnable: true
+                                    })
+                                } else {
+                                    this.setState({
+                                        isEnable: false
+                                    })
+                                }
+                                handleChangeStateId(value)
+                            }
+                        }
                     >
                         <Option value="-1" key="-1">所有</Option>
                         <Option value="1" key="1">申请领用</Option>
@@ -48,9 +64,14 @@ export default class ToolBarHeadphone extends React.Component {
                     <Option value="3">已驳回</Option>
                 </Select>
             </Form.Item>
-            <Form.Item name="batch" label="申请批次" rules={[{ required: true, message: '请选择' }]} >
+            <Form.Item name="batch"
+                label="申请批次"
+                rules={isEnable ? null : [{ required: true, message: '请选择' }]}
+
+            >
                 <Select
                     style={{ width: 200 }}
+                    disabled={isEnable}
                 >{
                         (batchArray ?? []).map((item) => {
                             return <Option key={item.BatchId} value={item.BatchId}>{item.BatchName}</Option>

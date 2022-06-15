@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Space, Card, Table, Button, Select, message } from 'antd'
+import { PageSize } from '../../config/memory_config';
 import { getApprovalEquipment, updateApprovalEquipment } from '../../api/'
 const { Option } = Select
 const { Column } = Table
 const Index = () => {
     const [data, setData] = useState([]);
+    const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(false);
     const [applyStatus, setApplyStatus] = useState('-1');
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -13,19 +15,22 @@ const Index = () => {
         getData()
         // eslint-disable-next-line
     }, [])
-    const getData = async () => {
+
+    const getData = async (begin = 1, end = 10) => {
         setLoading(true)
-        const result = await getApprovalEquipment(applyStatus)
+        const result = await getApprovalEquipment(applyStatus, begin, end)
         if (result.errMsg === 'OK') {
             setData(result.data)
+            setTotal(result.total)
         } else {
             setData([])
-            message.error(result.errMsg)
+            setTotal(0)
+            // message.error(result.errMsg)
         }
         setLoading(false)
     }
 
-    const handleRowSelect = (selectedRowKeys, selectedRows) => {
+    const handleRowSelect = (selectedRowKeys) => {
         setSelectedRowKeys(selectedRowKeys)
     }
 
@@ -87,13 +92,23 @@ const Index = () => {
             dataSource={data}
             bordered={true}
             rowKey='workflowId'
+            size='small'
             rowSelection={{
                 type: 'radio',
                 onChange: handleRowSelect,
                 selectedRowKeys
             }}
             loading={loading}
-            pagination={false}
+            pagination={{
+                showSizeChanger: false,
+                pageSize: PageSize,
+                total: total,
+                onChange: (pageNumber, pageSize) => {
+                    var begin = (pageNumber - 1) * pageSize + 1;
+                    var end = pageNumber * pageSize;
+                    getData(begin, end)
+                }
+            }}
             onRow={record => {
                 return {
                     onClick: event => { handleClickRow(record) }, // 点击行

@@ -72,7 +72,7 @@ export default class ToolBarOperateComponent extends React.Component {
                             label="VPN账号"
                             name="VPNAccount"
                         >
-                            <InputNumber />
+                            <Input />
                         </Form.Item>
                 }
 

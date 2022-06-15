@@ -104,7 +104,7 @@ const Index = () => {
                 total: result.total
             })
         } else {
-            message.error(result.errMsg)
+            // message.error(result.errMsg)
             setData({
                 data: [],
                 loading: false,

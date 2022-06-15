@@ -50,6 +50,14 @@ const LoseOrChangeHeadphone = (props) => {
     }, {
         title: '审批意见',
         dataIndex: 'OptionType',
+        render(text) {
+            if (isNaN(text)) {
+                return '';
+            } else {
+                return parseInt(text) === 0 ? '不同意' : parseInt(text) === 1 ? '同意' : '';
+            }
+
+        }
     }, {
         title: '备注',
         dataIndex: 'OptionRemark',
@@ -68,7 +76,7 @@ const LoseOrChangeHeadphone = (props) => {
             setData(result.data)
         } else {
             setData([])
-            message.error(result.errMsg)
+            // message.error(result.errMsg)
         }
         setLoading(false)
     }
@@ -95,13 +103,15 @@ const LoseOrChangeHeadphone = (props) => {
                 const cmd = stype === 'lose' ? 'lose_insert' : 'change_insert'
                 const { assertId, assetsTypeId, relationId, newAssetsTypeId, applyRemark } = await form.validateFields()
                 const errMsg = await submitMissInfo(assertId, assetsTypeId, newAssetsTypeId, applyRemark, relationId, cmd)
+                console.log('--->' + errMsg)
                 if (errMsg === 'OK') {
-                    message.success('申请成功')
-                    getData();
                     resolve();
+                    // message.success('申请成功')
+                    getData();
+
                 } else {
                     message.error(errMsg);
-                    reject();
+                    reject(errMsg);
                 }
             } catch (e) {
                 reject()
@@ -297,7 +307,7 @@ const LoseForm = (props) => {
         {<Form.Item
             name="relationId"
             label="关联Id"
-            hidden={false}
+            hidden={true}
         >
             <Input></Input>
         </Form.Item>}

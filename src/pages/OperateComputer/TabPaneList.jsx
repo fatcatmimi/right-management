@@ -63,6 +63,7 @@ export class AssetUse extends React.Component {
             optionCenter
         } = this.toolbar.current.getFieldsValue();
 
+        console.log(this.toolbar.current.getFieldsValue())
 
         return {
             startDate: startDate.format('YYYY-MM-DD'),
@@ -89,6 +90,8 @@ export class AssetUse extends React.Component {
             VPNAccount,
             optionCenter
         } = this.getParam()
+
+        console.log('VPNAccount:' + VPNAccount)
 
         const result = await getUseDataApi(
             startDate,
@@ -226,6 +229,7 @@ export class AssetUse extends React.Component {
                     selectedRowKeys: selectRowKeys,
                     onChange: this.onSelectChange
                 }}
+                size='small'
                 onRow={record => {
                     return {
                         onClick: () => {

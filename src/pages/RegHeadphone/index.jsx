@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Button, Space, Table, Modal, message, Popconfirm, Form, Input } from 'antd';
+import { Card, Button, Space, Table, Modal, message, Form, Input, Select } from 'antd';
 import { DownloadOutlined, CloseOutlined, PlusOutlined, CheckOutlined } from '@ant-design/icons';
 import ToolBarHeadphone from '../../components/ToolBar_Headphone/ToolBar_Headphone';
 import HeadApplyForm from './HeadApplyForm';
@@ -8,6 +8,7 @@ import { checkPersonId } from '../../tools/index';
 import { downFile, getBatchId, uploadFileHeadPhone, getEquipmentData, deleteBatchId, updateRegion, rejectReason } from '../../api';
 
 const { Column } = Table;
+const { Option } = Select
 export default class RegHeadphone extends React.Component {
     myRefWindow = React.createRef();
     myRef = React.createRef();
@@ -16,7 +17,7 @@ export default class RegHeadphone extends React.Component {
         data: [],
         loading: false,
         total: 0,
-        status: '1',
+        status: '-1',
         stateId: '-1',
         batchArray: [],
         selectedRowKeys: []
@@ -40,7 +41,7 @@ export default class RegHeadphone extends React.Component {
                 this.myRef.current.setFieldsValue({
                     batch: batchArray[0].BatchId
                 })
-                this.getData()
+                // this.getData()
             }
             this.setState({
                 batchArray
@@ -174,6 +175,7 @@ export default class RegHeadphone extends React.Component {
 
     handleComplete = () => {
         const { batch, stateId } = this.getToolBarParam()
+        let where = '';
         let workflowId = -1;
         if (parseInt(stateId) === 5 || parseInt(stateId) === 7) {
             try {
@@ -185,49 +187,71 @@ export default class RegHeadphone extends React.Component {
 
         }
 
-        const propF = (where) => ({
-            title: '是否选择该地区?',
-            cancelText: '取消',
-            okText: '确认',
-            onConfirm: () => {
-                return new Promise(async (resolve) => {
-                    const result = await updateRegion(this.projectId, batch, where, workflowId, stateId);
+        // const propF = (where) => ({
+        //     title: '是否选择该地区?',
+        //     cancelText: '取消',
+        //     okText: '确认',
+        //     onConfirm: () => {
+        //         return new Promise(async (resolve, reject) => {
+        //             const result = await updateRegion(this.projectId, batch, where, workflowId, stateId);
+        //             // alert(batch)
+        //             if (result === 'OK') {
+        //                 this.popBatch(batch.toString())
+        //                 message.success('更新成功')
+        //                 this.getData()
+        //                 Modal.destroyAll();
+        //                 return resolve();
+        //             } else {
+        //                 message.error(result);
+        //                 return reject(result);
+        //             }
+        //         })
+        //     }
+        // })
 
+        Modal.confirm({
+            width: 400,
+            title: '请选择区域',
+            okText: '提交',
+            cancelText: '取消',
+            centered: true,
+            closable: true,
+            content:
+                <>
+                    <span>请选择区域:</span>
+                    <Select style={{ width: 200 }} onChange={(value) => { where = value }}>
+                        <Option value="1">云集</Option>
+                        <Option value="4">智富</Option>
+                    </Select>
+                </>,
+            onOk: () => {
+                return new Promise(async (resolve, reject) => {
+                    const result = await updateRegion(this.projectId, batch, where, workflowId, stateId);
+                    // alert(batch)
                     if (result === 'OK') {
-                        this.popBatch(batch)
+                        this.popBatch(batch.toString())
                         message.success('更新成功')
                         this.getData()
                         Modal.destroyAll();
                         return resolve();
                     } else {
-                        message.error(result)
+                        message.error(result);
+                        return reject(result);
                     }
                 })
-
             }
+
+            // <Space size={'large'} direction={'vertical'}>
+            //     <Popconfirm {...(propF(1))}>
+            //         <Button type="primary" size={'large'} style={{ width: 150 }}>云集</Button>
+            //     </Popconfirm>
+            //     <Popconfirm {...(propF(4))}>
+            //         <Button type="primary" size={'large'} style={{ width: 150 }}>智富</Button>
+            //     </Popconfirm>
+            // </Space>,
+            // okButtonProps: { style: { display: 'none' } }
         })
 
-        if (batch) {
-            Modal.info({
-                width: 300,
-                title: '请选择区域',
-                okText: '提交',
-                centered: true,
-                closable: true,
-                content:
-                    <Space size={'large'} direction={'vertical'}>
-                        <Popconfirm {...(propF(1))}>
-                            <Button type="primary" size={'large'} style={{ width: 150 }}>云集</Button>
-                        </Popconfirm>
-                        <Popconfirm {...(propF(4))}>
-                            <Button type="primary" size={'large'} style={{ width: 150 }}>智富</Button>
-                        </Popconfirm>
-                    </Space>,
-                okButtonProps: { style: { display: 'none' } }
-            })
-        } else {
-            message.error('请选择批号！！！')
-        }
     }
 
     handleReject = () => {
@@ -250,6 +274,7 @@ export default class RegHeadphone extends React.Component {
             const result = await rejectReason(this.projectId, batch, reason, workflowId, stateId);
 
             if (result === 'OK') {
+
                 this.popBatch(batch)
                 this.getData()
                 Modal.destroyAll();
@@ -257,45 +282,46 @@ export default class RegHeadphone extends React.Component {
                 message.error(result);
             }
         }
-        if (batch) {
-            Modal.info({
-                width: 500,
-                title: '请填写原因',
-                okText: '提交',
-                centered: true,
-                closable: true,
-                content:
-                    <Form
-                        onFinish={onFinish}
-                        initialValues={{ reson: '' }}
+
+        Modal.info({
+            width: 500,
+            title: '请填写原因',
+            okText: '提交',
+            centered: true,
+            closable: true,
+            content:
+                <Form
+                    onFinish={onFinish}
+                    initialValues={{ reson: '' }}
+                >
+                    <Form.Item
+                        name="reason"
+                        label="驳回原因"
+                        rules={[{ required: true, message: '请填写驳回原因' }]}
                     >
-                        <Form.Item
-                            name="reason"
-                            label="驳回原因"
-                            rules={[{ required: true, message: '请填写驳回原因' }]}
-                        >
-                            <Input.TextArea showCount maxLength={100} />
-                        </Form.Item>
-                        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                            <Button type="primary" htmlType="submit">
-                                提交
-                            </Button>
-                        </Form.Item>
-                    </Form>,
-                okButtonProps: { style: { display: 'none' } }
-            })
-        } else {
-            message.error('请选择批号！！！')
-        }
+                        <Input.TextArea showCount maxLength={100} />
+                    </Form.Item>
+                    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                        <Button type="primary" htmlType="submit">
+                            提交
+                        </Button>
+                    </Form.Item>
+                </Form>,
+            okButtonProps: { style: { display: 'none' } }
+        })
+
     }
 
     getData = async (begin = 1, end = 10) => {
-        const { status, batch, stateId } = this.getToolBarParam()
+        let { status, batch, stateId } = this.getToolBarParam()
 
-        if (!batch) {
-            this.setState({ data: [] })
-            return
+        if (batch === '') {
+            batch = -1
         }
+        // if (!batch) {
+        //     this.setState({ data: [] })
+        //     return
+        // }
 
         this.setState({ loading: true });
 
@@ -332,13 +358,14 @@ export default class RegHeadphone extends React.Component {
     //从当前申请批次中删除当前的
     popBatch = (batch) => {
         const { batchArray } = this.state
-        if (batchArray.length > 0) {
+
+        if (batchArray && batchArray.length > 0) {
             const newBatchArry = batchArray.filter((item) => item.BatchId !== batch)
 
             this.setState({
                 batchArray: newBatchArry ?? []
             }, () => {
-                console.log('newBatcharry:', batchArray)
+
                 if (newBatchArry.length > 0) {
                     this.myRef.current.setFieldsValue({
                         batch: newBatchArry[0].BatchId
@@ -377,7 +404,7 @@ export default class RegHeadphone extends React.Component {
             this.extra = (
                 <Space>
                     <Button danger icon={<CloseOutlined />} onClick={this.handleCancel} disabled={status === '-1' ? true : false}>作废</Button>
-                    <Button type="primary" icon={<PlusOutlined />} onClick={this.handleApply} disabled={status === '-1' ? true : false}>申请</Button>
+                    <Button type="primary" icon={<PlusOutlined />} onClick={this.handleApply} >申请</Button>
                     <a href={`${downFile}/话务设备申请流程.pdf`}
                         download="话务设备申请流程.pdf"
                         target="_blank"
@@ -393,8 +420,8 @@ export default class RegHeadphone extends React.Component {
             this.type = 4;
             this.extra = (
                 <Space>
-                    <Button type="primary" icon={<CheckOutlined />} onClick={this.handleComplete} disabled={stateId !== "-1" ? false : true}>完成</Button>
-                    <Button type="primary" icon={<CloseOutlined />} onClick={this.handleReject} disabled={stateId !== "-1" ? false : true}>驳回</Button>
+                    <Button type="primary" icon={<CheckOutlined />} onClick={this.handleComplete} disabled={stateId === '-1' ? true : stateId === '5' || stateId === '7' ? false : stateId === '1' && status !== '-1' ? false : true}>完成</Button>
+                    <Button Button type="primary" icon={<CloseOutlined />} onClick={this.handleReject} disabled={stateId === '-1' ? true : stateId === '5' || stateId === '7' ? false : stateId === '1' && status !== '-1' ? false : true}>驳回</Button>
                 </Space>
             )
         }
@@ -445,6 +472,7 @@ export default class RegHeadphone extends React.Component {
                     <Column title="部门" dataIndex="DeptName" />
                     <Column title="使用人" dataIndex="UserPersonName" />
                     <Column title="数量" dataIndex="ApplyNum" />
+                    <Column title="申请原因" dataIndex="ApplyRemark" />
                     <Column title="申请日期" dataIndex="ApplyTime" />
                     <Column title="状态" dataIndex="ApplyStatus" />
                     <Column title="操作人" dataIndex="OptionPersonName" />

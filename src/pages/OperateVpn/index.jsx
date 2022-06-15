@@ -150,6 +150,7 @@ export default class OperateVpn extends React.Component {
         />}  >
             <Table columns={columns}
                 bordered
+                size='small'
                 dataSource={data}
                 rowKey={'workId'}
                 pagination={{
