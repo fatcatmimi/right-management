@@ -274,7 +274,7 @@ const LoseForm = (props) => {
         <hr></hr>
         <Form.Item
             name="assetsTypeId"
-            label="丢失资产类别"
+            label="原资产类别"
             rules={[
                 {
                     required: true,
