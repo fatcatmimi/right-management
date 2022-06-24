@@ -26,6 +26,7 @@ export default class RegHeadphone extends React.Component {
     componentDidMount() {
         const { status } = this.getToolBarParam();
         this.getBatchArray(status)
+        this.getData()
     }
 
 

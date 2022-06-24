@@ -18,8 +18,8 @@ export default class ToolBarHeadphone extends React.Component {
             // labelCol={{ span: 14 }}
             // wrapperCol={{ span: 15 }}
             initialValues={{
-                status: type === 1 ? "1" : "-1",
-                stateId: "-1"
+                status: "1", //,type === 1 ? "1" : "1",
+                stateId: "1"
             }}
             onFieldsChange={clearData}
         >

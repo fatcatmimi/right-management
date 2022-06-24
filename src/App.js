@@ -31,9 +31,9 @@ import './App.css'
 const { Sider, Content } = Layout;
 function App() {
     useEffect(() => {
-        // cookie.save('PHPSESSID', 'r0minlsharlv3rve5bkq3ljg21')
+        // cookie.save('PHPSESSID', 'ram7bp10ca7mht6cgvnhj1q3n1')
         // cookie.save('wnPersonId', '2021639')
-        // cookie.save('wnSessionKey', '680095b0e51e267686f16863de1b8892')
+        // cookie.save('wnSessionKey', 'd252bca48e644e793a201e627a9e60e0')
 
         //根据cookie 获取 person
         getPersonDetail()
